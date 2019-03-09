@@ -46,6 +46,10 @@ case "$URL" in
 esac
 
 # shellcheck disable=SC2061,SC2162,SC2035
-find . -path *bin/* | while read file; do cp "$file" /usr/local/bin/ 2>/dev/null || exit 0; done
+find . -path *bin/* | while read file; do cp "$file" /usr/local/bin/ 2>/dev/null; done
 # shellcheck disable=SC2061,SC2162,SC2035
-find . -path *lib/* | while read file; do cp "$file" /usr/local/lib/ 2>/dev/null || exit 0; done
+find . -path *lib/* | while read file; do cp "$file" /usr/local/lib/ 2>/dev/null; done
+
+printf "%s" "$(printf "%s" "$GIT_INFO" | jq .tag_name -r | sed 's\v\\')" > ./version
+
+exit 0

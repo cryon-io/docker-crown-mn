@@ -25,4 +25,4 @@ fi
 
 BASEDIR=$(dirname "$0")
 container=$(docker-compose -f "$BASEDIR/docker-compose.yml" $PROJECT ps -q mn)
-docker exec --user crown "$container" crown-cli -rpcuser=healthcheck -rpcpassword=healthcheck_pass -rpcport=10000 "$@"
+docker exec --user crown "$container" crown-cli "$@"

@@ -19,23 +19,40 @@
 #  Contact: cryi@tutanota.com
 
 ver=$(./get-version.sh)
-type="CROWN_SN"
-mn_status="$(crown-cli -rpcuser=healthcheck -rpcpassword=healthcheck_pass -rpcport=10000 masternode status | jq .status)"
-block_count="$(crown-cli getblockchaininfo | jq .blocks)"
-sync_status="$(crown-cli mnsync status | jq .IsBlockchainSynced)"
+type="CROWN_MN"
+mn_status="$(crown-cli masternode status 2>&1)"
+if printf "%s" "$mn_status" | grep "error:"; then 
+    mn_status=$(printf "%s" "$mn_status" | sed 's\error: \\g' | jq .message)
+else 
+    mn_status=$(printf "%s" "$mn_status" | jq .status)
+fi
+
+block_count="$(crown-cli getblockchaininfo 2>&1)"
+if printf "%s" "$block_count" | grep "error:"; then 
+    block_count=$(printf "%s" "$block_count" | sed 's\error: \\g' | jq .message)   
+else 
+    block_count="$(printf "%s" "$block_count" | jq .blocks)"
+fi
+
+sync_status="$(crown-cli mnsync status 2>&1)"
+if printf "%s" "$sync_status" | grep "error:"; then 
+    sync_status=$(printf "%s" "$sync_status" | sed 's\error: \\g' | jq .message) 
+else 
+    sync_status="$(printf "%s" "$sync_status" | jq .IsBlockchainSynced)"
+fi
 
 printf "\
-TYPE: %s \n\
-VERSION: %s \n\
-MN_STATUS: %s \n\
-BLOCKS: %s \n\
-SYNCED: %s \n\
+TYPE: %s
+VERSION: %s
+MN STATUS: %s
+BLOCKS: %s
+SYNCED: %s
 " "$type" "$ver" "$mn_status" "$block_count" "$sync_status" > /home/crown/.crown/node.info
 
 printf "\
-TYPE: %s \n\
-VERSION: %s \n\
-MN_STATUS: %s \n\
-BLOCKS: %s \n\
-SYNCED: %s \n\
+TYPE: %s
+VERSION: %s
+MN STATUS: %s
+BLOCKS: %s
+SYNCED: %s
 " "$type" "$ver" "$mn_status" "$block_count" "$sync_status"
