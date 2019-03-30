@@ -22,9 +22,10 @@ BASEDIR=$(dirname "$0")
 
 if [ ! -d "$BASEDIR/../data/blocks" ]; then 
     printf "loading chain bootstrap"
-    curl -L "https://nextcloud.crown.tech/nextcloud/s/GtiFnNoakxSyYyk/download" -o "$BASEDIR/../data/bootstrap.zip"
+    curl -L "https://nextcloud.crown.tech/nextcloud/s/GtiFnNoakxSyYyk/download" -o "$BASEDIR/../data/bootstrap.dat"
     unzip -o "$BASEDIR/../data/bootstrap.zip" -d "$BASEDIR/../data/"
     rm "$BASEDIR/../data/bootstrap.zip"
     sh "$BASEDIR/fs-permissions.sh"
 fi
+rm -f "$BASEDIR/../data/bootstrap.dat.old"
 exit 0
