@@ -1,10 +1,11 @@
 {
-    "version" : 0.201,
+    "version" : 0.21,
     "update-node": "tools/update-node.sh",
     "fs-permissions": "tools/fs-permissions.sh",
     "node-info": "tools/node-info.sh",
     "set-param": "tools/set-param.sh",
     "before-start": "tools/before-start.sh",
+    "on-start": "tools/on-start.sh",
     "cli" : "crown-cli",
     "required-ans-version" : 0
 }
