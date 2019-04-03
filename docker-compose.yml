@@ -33,6 +33,7 @@ services:
     restart: always
     init: true
     build: ./container
+    stop_grace_period: 2m
     volumes:
       - "./data:/home/crown/.crown:rw"
     pids_limit: 75
