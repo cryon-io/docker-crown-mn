@@ -52,4 +52,8 @@ find . -path *lib/* | while read file; do cp "$file" /usr/local/lib/ 2>/dev/null
 
 printf "%s" "$(printf "%s" "$GIT_INFO" | jq .tag_name -r | sed 's\v\\')" > ./version
 
+if [ ! -f "/usr/local/bin/crownd" ] || [ ! -f "/usr/local/bin/crown-cli" ]; then
+   exit 1
+fi
+
 exit 0
