@@ -37,6 +37,8 @@ services:
     volumes:
       - "./data:/home/crown/.crown:rw"
     pids_limit: 75
+    mem_limit: 750m
+    memswap_limit: 750m
     labels:
       - autoheal=true
     ports:
