@@ -19,7 +19,7 @@
 #  Contact: cryi@tutanota.com
 
 GIT_INFO=$(curl -sL "https://api.github.com/repos/Crowndev/crown-core/releases/latest")                                       
-URL=$(printf "%s\n" "$GIT_INFO" | jq .assets[].browser_download_url -r | grep Crown | grep Linux | grep 64)                        
+URL=$(printf "%s\n" "$GIT_INFO" | jq .assets[].browser_download_url -r | grep Crown | grep Linux | grep 64.zip)                        
 
 if [ -f "./limits.conf" ]; then 
     if grep "NODE_BINARY=" "./limits.conf"; then 
