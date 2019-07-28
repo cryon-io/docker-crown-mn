@@ -19,13 +19,46 @@
 #  Contact: cryi@tutanota.com
 
 BASEDIR=$(dirname "$0")
+BOOTSTRAP_URL=""
 
-if [ ! -d "$BASEDIR/../data/blocks" ]; then 
-    printf "loading chain bootstrap"
-    curl -L "https://nextcloud.crown.tech/nextcloud/s/GtiFnNoakxSyYyk/download" -o "$BASEDIR/../data/bootstrap.dat"
-    unzip -o "$BASEDIR/../data/bootstrap.zip" -d "$BASEDIR/../data/"
-    rm "$BASEDIR/../data/bootstrap.zip"
+if [ ! -d "$BASEDIR/../data/blocks" ]; then
+
+    if [ -n "$BOOTSTRAP_URL" ]; then
+        URL="$BOOTSTRAP_URL"
+    else
+        printf "loading chain bootstrap"
+        curl -L "https://nextcloud.crown.tech/nextcloud/s/RiyWmDLckmcXS6n/download" -o "$BASEDIR/../data/bootstrap.zip"
+        unzip -o "$BASEDIR/../data/bootstrap.zip" -d "$BASEDIR/../data/"
+        rm "$BASEDIR/../data/bootstrap.zip"
+        sh "$BASEDIR/fs-permissions.sh"
+        rm -f "$BASEDIR/../data/bootstrap.dat.old"
+        exit 0
+    fi
+
+    FILE=snapshot
+
+    printf "loading chain snapshot"
+    case "$URL" in
+    *.tar.gz)
+        (cd "$BASEDIR/../data/" &&
+            curl -L "$URL" -o "./$FILE.tar.gz" &&
+            tar -xzvf "./$FILE.tar.gz" &&
+            rm -f "./$FILE.tar.gz")
+        ;;
+    *.zip)
+        (cd "$BASEDIR/../data/" &&
+            curl -L "$URL" -o "./$FILE.zip" &&
+            unzip "./$FILE.zip" &&
+            rm -f "./$FILE.zip")
+        ;;
+    *.tar.bz2)
+        (cd "$BASEDIR/../data/" &&
+            curl -L "$URL" -o "./$FILE.tar.bz2" &&
+            tar xjf "./$FILE.tar.bz2" &&
+            rm -f "./$FILE.tar.bz2")
+        ;;
+    esac
     sh "$BASEDIR/fs-permissions.sh"
+
 fi
-rm -f "$BASEDIR/../data/bootstrap.dat.old"
 exit 0

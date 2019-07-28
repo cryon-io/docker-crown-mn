@@ -24,14 +24,14 @@ mn_status="$(crown-cli masternode status 2>&1)"
 if printf "%s" "$mn_status" | grep "error:"; then 
     mn_status=$(printf "%s" "$mn_status" | sed 's\error: \\g' | jq .message)
 else 
-    mn_status=$(printf "%s" "$mn_status" | jq .status)
+    mn_status=$(printf "%s" "$mn_status" | jq .status -r)
 fi
 
 blockchaininfo="$(crown-cli getblockchaininfo 2>&1)"
 if printf "%s" "$blockchaininfo" | grep "error:"; then 
     block_count=$(printf "%s" "$blockchaininfo" | sed 's\error: \\g' | jq .message)   
 else 
-    block_count="$(printf "%s" "$blockchaininfo" | jq .blocks)"
+    block_count="$(printf "%s" "$blockchaininfo" | jq .blocks -r)"
 fi
 
 if printf "%s" "$blockchaininfo" | grep "error:"; then 
@@ -44,7 +44,7 @@ sync_status="$(crown-cli mnsync status 2>&1)"
 if printf "%s" "$sync_status" | grep "error:"; then 
     sync_status=$(printf "%s" "$sync_status" | sed 's\error: \\g' | jq .message) 
 else 
-    sync_status="$(printf "%s" "$sync_status" | jq .IsBlockchainSynced)"
+    sync_status="$(printf "%s" "$sync_status" | jq .IsBlockchainSynced -r)"
 fi
 
 case "$mn_status" in

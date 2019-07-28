@@ -25,7 +25,7 @@ if [ -f "$BASEDIR/../data/bootstrap.dat.old" ]; then
 elif [ -f "$BASEDIR/../data/bootstrap.dat" ]; then 
     sleep 1m
     i=0
-    while [ ! -f "$BASEDIR/../data/bootstrap.dat" ]; do
+    while [ -f "$BASEDIR/../data/bootstrap.dat" ]; do
         sleep 1m
         i=$(( $i + 1 ))
         [ $i -gt 60 ] && break;
