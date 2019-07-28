@@ -27,11 +27,17 @@ else
     mn_status=$(printf "%s" "$mn_status" | jq .status)
 fi
 
-block_count="$(crown-cli getblockchaininfo 2>&1)"
-if printf "%s" "$block_count" | grep "error:"; then 
-    block_count=$(printf "%s" "$block_count" | sed 's\error: \\g' | jq .message)   
+blockchaininfo="$(crown-cli getblockchaininfo 2>&1)"
+if printf "%s" "$blockchaininfo" | grep "error:"; then 
+    block_count=$(printf "%s" "$blockchaininfo" | sed 's\error: \\g' | jq .message)   
 else 
-    block_count="$(printf "%s" "$block_count" | jq .blocks)"
+    block_count="$(printf "%s" "$blockchaininfo" | jq .blocks)"
+fi
+
+if printf "%s" "$blockchaininfo" | grep "error:"; then 
+    block_hash=$(printf "%s" "$blockchaininfo" | sed 's\error: \\g' | jq .message)   
+else 
+    block_hash="$(printf "%s" "$blockchaininfo" | jq .bestblockhash -r)"
 fi
 
 sync_status="$(crown-cli mnsync status 2>&1)"
@@ -41,18 +47,31 @@ else
     sync_status="$(printf "%s" "$sync_status" | jq .IsBlockchainSynced)"
 fi
 
-printf "\
-TYPE: %s
-VERSION: %s
-MN STATUS: %s
-BLOCKS: %s
-SYNCED: %s
-" "$type" "$ver" "$mn_status" "$block_count" "$sync_status" > /home/crown/.crown/node.info
+case "$mn_status" in
+    *"Masternode successfully started"*)
+        mn_status_level="ok"
+    ;;
+    *)
+        mn_status_level="error"
+    ;;
+esac
 
 printf "\
 TYPE: %s
 VERSION: %s
 MN STATUS: %s
+MN STATUS LEVEL: %s
 BLOCKS: %s
+BLOCK_HASH: %s
 SYNCED: %s
-" "$type" "$ver" "$mn_status" "$block_count" "$sync_status"
+" "$type" "$ver" "$mn_status" "$mn_status_level" "$block_count" "$block_hash" "$sync_status" > /home/crown/.crown/node.info
+
+printf "\
+TYPE: %s
+VERSION: %s
+MN STATUS: %s
+MN STATUS LEVEL: %s
+BLOCKS: %s
+BLOCK_HASH: %s
+SYNCED: %s
+" "$type" "$ver" "$mn_status" "$mn_status_level" "$block_count" "$block_hash" "$sync_status"

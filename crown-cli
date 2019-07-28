@@ -18,11 +18,12 @@
 #
 #  Contact: cryi@tutanota.com
 
+BASEDIR=$(dirname "$0")
+
 if [ -f "$BASEDIR/project_id" ]; then 
     PROJECT=$(sed 's/PROJECT=//g' "$BASEDIR/project_id")
     PROJECT="--project-name $PROJECT"
 fi 
 
-BASEDIR=$(dirname "$0")
 container=$(docker-compose -f "$BASEDIR/docker-compose.yml" $PROJECT ps -q mn)
 docker exec --user crown "$container" crown-cli "$@"
